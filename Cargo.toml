@@ -1,0 +1,3 @@
+[workspace]
+members = ["ddddocr_candle"]
+resolver = "2"

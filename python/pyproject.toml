@@ -1,0 +1,22 @@
+[project]
+name = "python"
+version = "0.1.0"
+description = "Add your description here"
+authors = [{ name = "bilabila", email = "bilabila@qq.com" }]
+dependencies = [
+  "onnxruntime>=1.19.2",
+  "onnx>=1.16.2",
+  "torch>=2.4.1",
+  "fire>=0.6.0",
+  "pillow>=10.4.0",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[tool.rye]
+managed = true
+virtual = true
+dev-dependencies = []
+
+[tool.rye.scripts]
+ddddocr_pytorch = { call = "ddddocr_pytorch" }

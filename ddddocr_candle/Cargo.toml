@@ -1,0 +1,11 @@
+[package]
+name = "ddddocr_candle"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { version = "1.0.89", features = ["backtrace"] }
+candle-core = "0.7.1"
+candle-nn = "0.7.1"
+image = "0.25.2"
+serde_json = "1.0.128"
