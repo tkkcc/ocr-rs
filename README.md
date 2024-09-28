@@ -16,9 +16,20 @@ cd python
 rye run ddddocr_pytorch ../sample/79.png
 ```
 
-benchmark on my laptop (run with --test-speed)
+benchmark on my laptop (run above with --test-speed)
 ```txt
 pytorch vs candle(default feature)
 79.png: 9.3ms vs 65ms
 longsingleline.png: 51.9ms vs 770ms
+```
+
+benchmark on android emulator 7.0 x86
+```txt
+onnxruntime in kotlin
+79: 24ms
+long: 280ms
+
+candle in rust
+79: 84ms
+long 1222ms
 ```
