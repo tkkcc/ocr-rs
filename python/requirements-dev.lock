@@ -68,6 +68,7 @@ pillow==10.4.0
 protobuf==5.28.2
     # via onnx
     # via onnxruntime
+safetensors==0.4.5
 setuptools==75.1.0
     # via torch
 six==1.16.0

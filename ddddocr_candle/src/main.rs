@@ -1,9 +1,9 @@
-use std::{env, error::Error, fs::File, io::BufReader, path::PathBuf};
+use std::{env, fs::File, io::BufReader, path::PathBuf};
 
 use candle_core::{DType, Device, Tensor};
 use candle_nn::{
-    conv2d, linear, lstm, ops::sigmoid, Conv2d, Conv2dConfig, Linear, Module, VarBuilder, VarMap,
-    LSTM, RNN,
+    conv2d, linear, lstm, ops::sigmoid, Conv2d, Conv2dConfig, Linear,
+    Module, VarBuilder, LSTM, RNN,
 };
 use image::GenericImageView;
 
@@ -63,26 +63,26 @@ struct Ocr {
 impl Ocr {
     fn load(vb: VarBuilder) -> candle_core::Result<Self> {
         let mut i = 0;
-        let mut count = || -> usize {
+        let mut name = || -> String {
             i += 1;
-            i - 1
+            format!("m.{}", i - 1)
         };
         let c = 512;
         Ok(Self {
             m: vec![
-                Box::new(Down::load(vb.pp(count()), 1, 24)?),
-                Box::new(Res::load(vb.pp(count()), 24, 24)?),
-                Box::new(Res::load(vb.pp(count()), 24, 24)?),
-                Box::new(Down::load(vb.pp(count()), 24, 96)?),
-                Box::new(conv2d(96, 48, 1, Default::default(), vb.pp(count()))?),
-                Box::new(Res::load(vb.pp(count()), 48, 192)?),
-                Box::new(Res::load(vb.pp(count()), 48, 192)?),
-                Box::new(Res::load(vb.pp(count()), 48, 192)?),
-                Box::new(Down::load(vb.pp(count()), 48, 192)?),
-                Box::new(conv2d(192, 64, 1, Default::default(), vb.pp(count()))?),
-                Box::new(Res::load(vb.pp(count()), 64, 256)?),
-                Box::new(Res::load(vb.pp(count()), 64, 256)?),
-                Box::new(Res::load(vb.pp(count()), 64, 256)?),
+                Box::new(Down::load(vb.pp(name()), 1, 24)?),
+                Box::new(Res::load(vb.pp(name()), 24, 24)?),
+                Box::new(Res::load(vb.pp(name()), 24, 24)?),
+                Box::new(Down::load(vb.pp(name()), 24, 96)?),
+                Box::new(conv2d(96, 48, 1, Default::default(), vb.pp(name()))?),
+                Box::new(Res::load(vb.pp(name()), 48, 192)?),
+                Box::new(Res::load(vb.pp(name()), 48, 192)?),
+                Box::new(Res::load(vb.pp(name()), 48, 192)?),
+                Box::new(Down::load(vb.pp(name()), 48, 192)?),
+                Box::new(conv2d(192, 64, 1, Default::default(), vb.pp(name()))?),
+                Box::new(Res::load(vb.pp(name()), 64, 256)?),
+                Box::new(Res::load(vb.pp(name()), 64, 256)?),
+                Box::new(Res::load(vb.pp(name()), 64, 256)?),
             ],
             lstm: lstm(c, c, Default::default(), vb.pp("lstm"))?,
             lstm_reverse: lstm(c, c, Default::default(), vb.pp("lstm_reverse"))?,
@@ -94,7 +94,7 @@ impl Ocr {
 impl Module for Ocr {
     fn forward(&self, xs: &Tensor) -> candle_core::Result<Tensor> {
         let mut x = xs.clone();
-        for (i, m) in self.m.iter().enumerate() {
+        for (_, m) in self.m.iter().enumerate() {
             x = m.forward(&x)?;
         }
         let (b, c, h, w) = x.dims4()?;
@@ -103,8 +103,6 @@ impl Module for Ocr {
 
         let mut state = vec![self.lstm.zero_state(b)?];
         for inp in inp_sequence.iter() {
-            // dbg!(inp.shape());
-            // dbg!(states.last().unwrap().h.shape());
             state.push(self.lstm.step(&inp.squeeze(2)?, &state.last().unwrap())?);
         }
         let mut state_reverse = vec![self.lstm_reverse.zero_state(b)?];
@@ -151,16 +149,38 @@ fn main() -> anyhow::Result<()> {
         .interpolate2d(64, (w * 64 / h) as usize)?;
     let data = (((data / 255.0)? - 0.5)? / 0.5)?;
 
-    let varmap = VarMap::new();
-    let vb = VarBuilder::from_varmap(&varmap, DType::F32, &Device::Cpu);
+    let weight = PathBuf::from_iter(&[
+        env!("CARGO_MANIFEST_DIR"),
+        "..",
+        "python",
+        "ddddocr_pytorch",
+        "ddddocr.safetensors",
+    ]);
+
+    let vb = unsafe { VarBuilder::from_mmaped_safetensors(&[weight], DType::F32, &Device::Cpu)? };
+
+    // let varmap = VarMap::new();
+    // let vb = VarBuilder::from_varmap(&varmap, DType::F32, &Device::Cpu);
+
     let net = Ocr::load(vb)?;
     let out = net.forward(&data)?;
+
+    // let map = varmap.data().lock().unwrap();
+    // for (k, v) in map.iter() {
+    //     dbg!(k, v.shape());
+    // }
+    // drop(map);
 
     // let out = ocr(img)?;
     let out: Vec<u32> = out.argmax(2)?.squeeze(1)?.to_vec1()?;
 
-    let mut charset = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    charset.extend(["..", "python", "ddddocr_pytorch", "charset.json"]);
+    let charset = PathBuf::from_iter(&[
+        env!("CARGO_MANIFEST_DIR"),
+        "..",
+        "python",
+        "ddddocr_pytorch",
+        "charset.json",
+    ]);
     let charset: Vec<String> = serde_json::from_reader(BufReader::new(File::open(charset)?))?;
 
     let out: String = out
