@@ -186,13 +186,13 @@ class OCR(nn.Module):
         import re
 
         weight = dict()
-        for k,v in self.state_dict().items():
-            if k.startswith("lstm") and k.endswith("_reverse") :
-                old =k 
+        for k, v in self.state_dict().items():
+            if k.startswith("lstm") and k.endswith("_reverse"):
+                old = k
                 k = re.sub(r"lstm.(.*)_reverse", r"lstm_reverse.\1", k)
                 print(f"rename {old} => {k}")
 
-            weight[k]=v
+            weight[k] = v
 
         save_file(weight, path)
 
@@ -217,8 +217,18 @@ def load_charset() -> list[str]:
     return charset
 
 
+def test_ocr_speed(i0: Tensor, net: OCR):
+    from timeit import default_timer as timer
+
+    net(i0)
+    start = timer()
+    for i in range(10):
+        net(i0)
+    print((timer() - start) / 10 * 1000, "ms")
+
+
 @torch.no_grad()
-def test_ocr(img: str):
+def test_ocr(img: str, test_speed: bool = False, save_to_safetensor: bool = False):
     net = OCR().load_from_onnx()
 
     i0 = Image.open(img)
@@ -235,6 +245,8 @@ def test_ocr(img: str):
     i0 = (i0 / 255.0 - 0.5) / 0.5
 
     out = net(i0)
+    if test_speed:
+        test_ocr_speed(i0, net)
 
     out = out.argmax(-1).squeeze().tolist()
     charset = load_charset()
@@ -243,4 +255,5 @@ def test_ocr(img: str):
 
     # net.test_origin_onnx(i0)
     # net.save_to_onnx("tmp.pth")
-    net.save_to_safetensor(Path(__file__).parent / "ddddocr.safetensors")
+    if save_to_safetensor:
+        net.save_to_safetensor(Path(__file__).parent / "ddddocr.safetensors")

@@ -1,10 +1,10 @@
-use std::{env, fs::File, io::BufReader, path::PathBuf};
+use std::{env, fs::File, io::BufReader, path::PathBuf, time::Instant};
 
 use candle_core::{DType, Device, Tensor};
 use candle_nn::{
-    conv2d, linear, lstm, ops::sigmoid, Conv2d, Conv2dConfig, Linear,
-    Module, VarBuilder, LSTM, RNN,
+    conv2d, linear, lstm, ops::sigmoid, Conv2d, Conv2dConfig, Linear, Module, VarBuilder, LSTM, RNN,
 };
+use clap::{arg, Parser};
 use image::GenericImageView;
 
 struct Down {
@@ -54,13 +54,13 @@ impl Module for Res {
     }
 }
 
-struct Ocr {
+struct OCR {
     m: Vec<Box<dyn Module>>,
     lstm: LSTM,
     lstm_reverse: LSTM,
     fc: Linear,
 }
-impl Ocr {
+impl OCR {
     fn load(vb: VarBuilder) -> candle_core::Result<Self> {
         let mut i = 0;
         let mut name = || -> String {
@@ -91,7 +91,7 @@ impl Ocr {
     }
 }
 
-impl Module for Ocr {
+impl Module for OCR {
     fn forward(&self, xs: &Tensor) -> candle_core::Result<Tensor> {
         let mut x = xs.clone();
         for (_, m) in self.m.iter().enumerate() {
@@ -128,26 +128,42 @@ impl Module for Ocr {
     }
 }
 
+fn test_ocr_speed(i0: &Tensor, net: &OCR) {
+    let start = Instant::now();
+    net.forward(i0);
+    for i in 0..10 {
+        net.forward(i0);
+    }
+    dbg!(start.elapsed().as_millis() / 10);
+}
+
+#[derive(Parser)]
+struct Arg {
+    i0: PathBuf,
+    #[arg(long)]
+    test_speed: bool,
+}
+
 fn main() -> anyhow::Result<()> {
-    let img = env::args().nth(1).expect("require image path");
-    let img = image::ImageReader::open(img)
+    let arg = Arg::parse();
+    let i0 = arg.i0;
+    let i0 = image::ImageReader::open(i0)
         .unwrap()
         .decode()
         .unwrap()
         .to_rgb8();
 
-    let h = img.height();
-    let w = img.width();
+    let h = i0.height();
+    let w = i0.width();
 
-    let data = img.into_raw();
-    let data = Tensor::from_vec(data, (h as usize, w as usize, 3), &Device::Cpu)?
+    let mut i0 = Tensor::from_vec(i0.into_raw(), (h as usize, w as usize, 3), &Device::Cpu)?
         .permute((2, 0, 1))?
         .unsqueeze(0)?;
-    let data = data
+    i0 = i0
         .to_dtype(DType::F32)?
         .mean_keepdim(1)?
         .interpolate2d(64, (w * 64 / h) as usize)?;
-    let data = (((data / 255.0)? - 0.5)? / 0.5)?;
+    i0 = (((i0 / 255.0)? - 0.5)? / 0.5)?;
 
     let weight = PathBuf::from_iter(&[
         env!("CARGO_MANIFEST_DIR"),
@@ -162,8 +178,11 @@ fn main() -> anyhow::Result<()> {
     // let varmap = VarMap::new();
     // let vb = VarBuilder::from_varmap(&varmap, DType::F32, &Device::Cpu);
 
-    let net = Ocr::load(vb)?;
-    let out = net.forward(&data)?;
+    let net = OCR::load(vb)?;
+    let out = net.forward(&i0)?;
+    if arg.test_speed {
+        test_ocr_speed(&i0, &net);
+    }
 
     // let map = varmap.data().lock().unwrap();
     // for (k, v) in map.iter() {
