@@ -19,6 +19,6 @@ rye run ddddocr_pytorch ../sample/79.png
 benchmark on my laptop (run with --test-speed)
 ```txt
 pytorch vs candle(default feature)
-79.png: 9.3ms vs 70ms
-longsingleline.png: 51.9ms vs 903ms
+79.png: 9.3ms vs 65ms
+longsingleline.png: 51.9ms vs 770ms
 ```

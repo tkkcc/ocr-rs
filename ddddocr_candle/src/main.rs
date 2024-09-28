@@ -129,8 +129,8 @@ impl Module for OCR {
 }
 
 fn test_ocr_speed(i0: &Tensor, net: &OCR) {
-    let start = Instant::now();
     net.forward(i0);
+    let start = Instant::now();
     for i in 0..10 {
         net.forward(i0);
     }
