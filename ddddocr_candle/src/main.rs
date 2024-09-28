@@ -1,6 +1,6 @@
 use std::{env, fs::File, io::BufReader, path::PathBuf, time::Instant};
 
-use candle_core::{DType, Device, Tensor};
+use candle_core::{DType, Device, IndexOp, Tensor};
 use candle_nn::{
     conv2d, linear, lstm, ops::sigmoid, Conv2d, Conv2dConfig, Linear, Module, VarBuilder, LSTM, RNN,
 };
@@ -99,25 +99,25 @@ impl Module for OCR {
         }
         let (b, c, h, w) = x.dims4()?;
         x = x.reshape((b, c * h, w))?;
-        let inp_sequence = x.chunk(w, 2)?;
+        // let inp_sequence = x.chunk(w, 2)?;
 
         let mut state = vec![self.lstm.zero_state(b)?];
-        for inp in inp_sequence.iter() {
-            state.push(self.lstm.step(&inp.squeeze(2)?, &state.last().unwrap())?);
+        for i in 0..w {
+            state.push(self.lstm.step(&x.i((.., .., i))?, &state.last().unwrap())?);
         }
         let mut state_reverse = vec![self.lstm_reverse.zero_state(b)?];
-        for inp in inp_sequence.iter().rev() {
+        for i in (0..w).rev() {
             state_reverse.push(
                 self.lstm_reverse
-                    .step(&inp.squeeze(2)?, &state_reverse.last().unwrap())?,
+                    .step(&x.i((.., .., i))?, &state_reverse.last().unwrap())?,
             );
         }
-        let h: Vec<_> = state
+        let h = state
             .into_iter()
             .skip(1)
             .zip(state_reverse.into_iter().skip(1).rev())
-            .map(|(a, b)| Tensor::cat(&[a.h, b.h], 1).unwrap())
-            .collect();
+            .map(|(a, b)| Tensor::cat(&[a.h, b.h], 1))
+            .collect::<candle_core::Result<Vec<_>>>()?;
         // dbg!(h[0].shape(), h.len());
         // panic!();
         x = Tensor::stack(&h, 0)?;
