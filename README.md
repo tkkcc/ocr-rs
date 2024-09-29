@@ -34,7 +34,7 @@ ort(default feature)
 longsingleline: 47ms
 ```
 
-benchmark on android emulator 7.0 x86
+benchmark on genymotion android 7.0 x86
 ```txt
 onnxruntime in kotlin
 79: 24ms
@@ -47,4 +47,50 @@ longsingleline: 1222ms
 tract in rust
 79: 170ms
 longsingleline: 3007ms
+```
+
+
+## paddleocr v4
+
+based on rec model in https://github.com/jingsongliujing/OnnxOCR
+
+```sh
+cd python
+rye run paddleocr_onnxruntime ../sample/79.png
+```
+
+benchmark on my laptop
+```txt
+onnxruntime
+79: 5ms
+longsingleline: 54ms
+```
+
+benchmark on genymotion android 7.0 x86
+```txt
+onnxruntime in kotlin
+79: 15ms
+longsingleline: 199ms
+```
+benchmark on genymotion android 11.0 x86_64
+```txt
+onnxruntime in kotlin
+longsingleline: 145ms
+```
+benchmark on android studio emulator 9.0 x86
+```txt
+onnxruntime in kotlin
+longsingleline: 113ms
+```
+benchmark on android studio emulator 12.0 x86_64
+```txt
+onnxruntime in kotlin
+longsingleline: 104ms
+```
+
+## mlkit
+
+```txt
+benchmark on android studio emulator 12.0 x86_64
+longsingleline(height=48): 264ms
 ```

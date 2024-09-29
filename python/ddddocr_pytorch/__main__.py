@@ -1,4 +1,4 @@
-import fire
-from ddddocr_pytorch import test_ocr
+import ddddocr_pytorch
 
-fire.Fire(test_ocr)
+ddddocr_pytorch.main()
+

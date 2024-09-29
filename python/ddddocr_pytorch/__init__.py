@@ -8,7 +8,7 @@ from PIL import Image
 import json
 from typing import Self
 from torch import Tensor
-
+import typer
 
 class Down(nn.Module):
     def __init__(self, ci: int, co: int):
@@ -274,3 +274,6 @@ def test_ocr(
         net.save_to_safetensor(Path(__file__).parent / "ddddocr.safetensors")
     if save_to_tflite:
         net.save_to_tflite(Path(__file__).parent / "ddddocr.tflite")
+
+def main():
+    typer.run(test_ocr)
