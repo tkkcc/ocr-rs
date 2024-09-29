@@ -196,6 +196,16 @@ class OCR(nn.Module):
 
         save_file(weight, path)
 
+    def save_to_tflite(self, path: str | Path):
+        import ai_edge_torch
+        from torch.export import Dim
+
+        edge_model = ai_edge_torch.convert(
+            self.eval(),
+            (torch.ones(1, 1, 64, 128),),
+            dynamic_shapes=dict(x={3: Dim("width")}),
+        )
+
 
 def load_onnx(path: str | Path) -> dict[str, Tensor]:
     import onnx
@@ -228,7 +238,12 @@ def test_ocr_speed(i0: Tensor, net: OCR):
 
 
 @torch.no_grad()
-def test_ocr(img: str, test_speed: bool = False, save_to_safetensor: bool = False):
+def test_ocr(
+    img: str,
+    test_speed: bool = False,
+    save_to_safetensor: bool = False,
+    save_to_tflite: bool = False,
+):
     net = OCR().load_from_onnx()
 
     i0 = Image.open(img)
@@ -257,3 +272,5 @@ def test_ocr(img: str, test_speed: bool = False, save_to_safetensor: bool = Fals
     # net.save_to_onnx("tmp.pth")
     if save_to_safetensor:
         net.save_to_safetensor(Path(__file__).parent / "ddddocr.safetensors")
+    if save_to_tflite:
+        net.save_to_tflite(Path(__file__).parent / "ddddocr.tflite")
