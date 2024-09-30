@@ -16,14 +16,13 @@ cargo run --release -p ddddocr_ort sample/79.png
 
 # pytorch
 cd python
+rye sync
 rye run ddddocr test-torch ../sample/79.png
 
 # onnxruntime
-cd python
 rye run ddddocr test-onnx ../sample/79.png
 
 # ncnn
-cd python
 rye run ddddocr test-torch ../sample/79.png --export-onnx
 rye run ddddocr test-ncnn ../sample/79.png
 ```
@@ -74,6 +73,7 @@ based on rec model in https://github.com/jingsongliujing/OnnxOCR
 ```sh
 # onnxruntime
 cd python
+rye sync
 rye run paddleocr test-onnx ../sample/79.png
 
 # ncnn
