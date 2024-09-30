@@ -14,7 +14,11 @@ cargo run --release -p ddddocr_candle sample/79.png
 # ort
 cargo run --release -p ddddocr_ort sample/79.png
 
-# pytorch port
+# pytorch
+cd python
+rye run ddddocr_pytorch test-pytorch ../sample/79.png
+
+# onnxruntime
 cd python
 rye run ddddocr_pytorch ../sample/79.png
 ```
@@ -55,15 +59,25 @@ longsingleline: 3007ms
 based on rec model in https://github.com/jingsongliujing/OnnxOCR
 
 ```sh
+# onnxruntime
 cd python
-rye run paddleocr_onnxruntime ../sample/79.png
+rye run paddleocr_onnxruntime test-onnx ../sample/79.png
+
+# ncnn
+cd python
+pnnx paddleocr_onnxruntime/rec.onnx 'inputshape=[1,3,48,16]f32' 'inputshape2=[1,3,48,4000]f32' fp16=0
+rye run paddleocr_onnxruntime test-ncnn ../sample/79.png
 ```
 
-benchmark on my laptop
+benchmark on my laptop (run above with --test-speed)
 ```txt
 onnxruntime
 79: 5ms
 longsingleline: 54ms
+
+ncnn
+79: 2.4ms
+longsingleline: 34ms
 ```
 
 benchmark on genymotion android 7.0 x86

@@ -9,110 +9,62 @@
 #   generate-hashes: false
 #   universal: false
 
-absl-py==2.1.0
-    # via keras-nightly
-    # via tb-nightly
-    # via tf-nightly
-    # via torch-xla
-ai-edge-litert-nightly==1.0.1.dev20240929
-    # via ai-edge-torch-nightly
-ai-edge-quantizer-nightly==0.0.1.dev20240929
-    # via ai-edge-torch-nightly
-ai-edge-torch-nightly==0.3.0.dev20240929
-astunparse==1.6.3
-    # via tf-nightly
-cachetools==4.2.4
-    # via google-auth
+anyio==4.6.0
+    # via httpx
+astor==0.8.1
+    # via paddlepaddle
 certifi==2024.8.30
+    # via httpcore
+    # via httpx
     # via requests
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via typer
-cloud-tpu-client==0.10
-    # via torch-xla
 coloredlogs==15.0.1
     # via onnxruntime
+decorator==5.1.1
+    # via paddlepaddle
 filelock==3.16.1
     # via torch
     # via triton
 fire==0.6.0
 flatbuffers==24.3.25
-    # via ai-edge-litert-nightly
     # via onnxruntime
-    # via tf-nightly
 fsspec==2024.9.0
     # via torch
-gast==0.6.0
-    # via tf-nightly
-google-api-core==1.31.5
-    # via google-api-python-client
-google-api-python-client==1.8.0
-    # via cloud-tpu-client
-google-auth==1.35.0
-    # via google-api-core
-    # via google-api-python-client
-    # via google-auth-httplib2
-google-auth-httplib2==0.2.0
-    # via google-api-python-client
-google-pasta==0.2.0
-    # via tf-nightly
-googleapis-common-protos==1.65.0
-    # via google-api-core
-grpcio==1.66.2
-    # via tb-nightly
-    # via tf-nightly
-h5py==3.12.1
-    # via keras-nightly
-    # via tf-nightly
-httplib2==0.22.0
-    # via google-api-python-client
-    # via google-auth-httplib2
-    # via oauth2client
+h11==0.14.0
+    # via httpcore
+httpcore==1.0.5
+    # via httpx
+httpx==0.27.2
+    # via paddlepaddle
 humanfriendly==10.0
     # via coloredlogs
 idna==3.10
+    # via anyio
+    # via httpx
     # via requests
-immutabledict==4.2.0
-    # via ai-edge-quantizer-nightly
 jinja2==3.1.4
     # via torch
-keras-nightly==3.6.0.dev2024092903
-    # via tf-nightly
-libclang==18.1.1
-    # via tf-nightly
-markdown==3.7
-    # via tb-nightly
 markdown-it-py==3.0.0
     # via rich
 markupsafe==2.1.5
     # via jinja2
-    # via werkzeug
 mdurl==0.1.2
     # via markdown-it-py
-ml-dtypes==0.4.1
-    # via keras-nightly
-    # via tf-nightly
 mpmath==1.3.0
     # via sympy
-namex==0.0.8
-    # via keras-nightly
+ncnn==1.0.20240820
 networkx==3.3
     # via torch
-numpy==2.1.1
-    # via ai-edge-litert-nightly
-    # via ai-edge-quantizer-nightly
-    # via ai-edge-torch-nightly
-    # via h5py
-    # via keras-nightly
-    # via ml-dtypes
+numpy==1.26.4
+    # via ncnn
     # via onnx
     # via onnxruntime
     # via opencv-python
-    # via scipy
-    # via shapely
-    # via tb-nightly
-    # via tf-nightly
+    # via opt-einsum
+    # via paddlepaddle
 nvidia-cublas-cu12==12.1.3.1
     # via nvidia-cudnn-cu12
     # via nvidia-cusolver-cu12
@@ -141,112 +93,54 @@ nvidia-nvjitlink-cu12==12.6.68
     # via nvidia-cusparse-cu12
 nvidia-nvtx-cu12==12.1.105
     # via torch
-oauth2client==4.1.3
-    # via cloud-tpu-client
 onnx==1.16.2
 onnxruntime==1.19.2
 opencv-python==4.10.0.84
-opt-einsum==3.4.0
-    # via tf-nightly
-optree==0.12.1
-    # via keras-nightly
+    # via ncnn
+opt-einsum==3.3.0
+    # via paddlepaddle
 packaging==24.1
-    # via google-api-core
-    # via keras-nightly
     # via onnxruntime
-    # via tb-nightly
-    # via tf-nightly
+paddle2onnx==1.2.9
+paddlepaddle==2.6.2
 pillow==10.4.0
-protobuf==5.28.2
-    # via google-api-core
-    # via googleapis-common-protos
+    # via paddlepaddle
+pip==24.2
+pnnx==20240819
+portalocker==2.10.1
+    # via ncnn
+protobuf==4.25.5
     # via onnx
     # via onnxruntime
-    # via tb-nightly
-    # via tf-nightly
-pyasn1==0.6.1
-    # via oauth2client
-    # via pyasn1-modules
-    # via rsa
-pyasn1-modules==0.4.1
-    # via google-auth
-    # via oauth2client
-pyclipper==1.3.0.post5
+    # via paddlepaddle
 pygments==2.18.0
     # via rich
-pyparsing==3.1.4
-    # via httplib2
-pytz==2024.2
-    # via google-api-core
-pyyaml==6.0.2
-    # via torch-xla
 requests==2.32.3
-    # via google-api-core
-    # via tf-nightly
+    # via ncnn
 rich==13.8.1
-    # via keras-nightly
     # via typer
-rsa==4.9
-    # via google-auth
-    # via oauth2client
 safetensors==0.4.5
-    # via ai-edge-torch-nightly
-scipy==1.14.1
-    # via ai-edge-torch-nightly
-setuptools==75.1.0
-    # via google-api-core
-    # via google-auth
-    # via tb-nightly
-    # via tf-nightly
-shapely==2.0.6
 shellingham==1.5.4
     # via typer
 six==1.16.0
-    # via astunparse
     # via fire
-    # via google-api-core
-    # via google-api-python-client
-    # via google-auth
-    # via google-pasta
-    # via oauth2client
-    # via tb-nightly
-    # via tf-nightly
+sniffio==1.3.1
+    # via anyio
+    # via httpx
 sympy==1.13.3
     # via onnxruntime
     # via torch
-tabulate==0.9.0
-    # via ai-edge-torch-nightly
-tb-nightly==2.18.0a20240925
-    # via tf-nightly
-tensorboard-data-server==0.7.2
-    # via tb-nightly
-tensorflow-io-gcs-filesystem==0.37.1
-    # via tf-nightly
 termcolor==2.4.0
     # via fire
-    # via tf-nightly
-tf-nightly==2.19.0.dev20240929
-    # via ai-edge-quantizer-nightly
-    # via ai-edge-torch-nightly
 torch==2.4.1
-    # via ai-edge-torch-nightly
-torch-xla==2.4.0
-    # via ai-edge-torch-nightly
+    # via pnnx
+tqdm==4.66.5
+    # via ncnn
 triton==3.0.0
     # via torch
 typer==0.12.5
 typing-extensions==4.12.2
-    # via optree
-    # via tf-nightly
     # via torch
     # via typer
-uritemplate==3.0.1
-    # via google-api-python-client
 urllib3==2.2.3
     # via requests
-werkzeug==3.0.4
-    # via tb-nightly
-wheel==0.44.0
-    # via astunparse
-wrapt==1.16.0
-    # via tf-nightly
