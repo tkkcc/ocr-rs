@@ -169,7 +169,7 @@ fn main() -> anyhow::Result<()> {
         env!("CARGO_MANIFEST_DIR"),
         "..",
         "python",
-        "ddddocr_pytorch",
+        "ddddocr",
         "ddddocr.safetensors",
     ]);
 
@@ -197,7 +197,7 @@ fn main() -> anyhow::Result<()> {
         env!("CARGO_MANIFEST_DIR"),
         "..",
         "python",
-        "ddddocr_pytorch",
+        "ddddocr",
         "charset.json",
     ]);
     let charset: Vec<String> = serde_json::from_reader(BufReader::new(File::open(charset)?))?;

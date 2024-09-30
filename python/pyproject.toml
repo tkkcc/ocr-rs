@@ -4,27 +4,28 @@ version = "0.1.0"
 description = "Add your description here"
 authors = [{ name = "bilabila", email = "bilabila@qq.com" }]
 dependencies = [
-  "onnxruntime>=1.19.2",
-  "onnx>=1.16.2",
-  "torch>=2.4.1",
-  "fire>=0.6.0",
-  "pillow>=10.4.0",
-  "safetensors>=0.4.5",
-  # "ai-edge-torch-nightly>=0.3.0.dev20240929",
-  "typer>=0.12.5",
-  "opencv-python>=4.10.0.84",
-  # "shapely>=2.0.6",
-  # "pyclipper>=1.3.0.post5",
-  "pip>=24.2",
-  "paddlepaddle>=2.6.2",
-  "paddle2onnx>=1.2.9",
-  # "onnx2tf>=1.25.14",
-  # "tf-keras>=2.17.0",
-  # "onnx-graphsurgeon>=0.5.2",
-  # "psutil>=6.0.0",
-  # "sng4onnx>=1.0.4",
-  "pnnx>=20240819",
-  "ncnn>=1.0.20240820",
+    "onnxruntime>=1.19.2",
+    "onnx>=1.16.2",
+    "torch>=2.4.1",
+    "fire>=0.6.0",
+    "pillow>=10.4.0",
+    "safetensors>=0.4.5",
+    "ai-edge-torch-nightly>=0.3.0.dev20240929",
+    "typer>=0.12.5",
+    "opencv-python>=4.10.0.84",
+    # "shapely>=2.0.6",
+    # "pyclipper>=1.3.0.post5",
+    "pip>=24.2",
+    "paddlepaddle>=2.6.2",
+    "paddle2onnx>=1.2.9",
+    # "onnx2tf>=1.25.14",
+    # "tf-keras>=2.17.0",
+    # "onnx-graphsurgeon>=0.5.2",
+    # "psutil>=6.0.0",
+    # "sng4onnx>=1.0.4",
+    "pnnx>=20240819",
+    "ncnn>=1.0.20240820",
+    "onnxscript>=0.1.0.dev20240930",
 ]
 requires-python = ">= 3.8"
 
@@ -34,5 +35,5 @@ virtual = true
 dev-dependencies = []
 
 [tool.rye.scripts]
-ddddocr_pytorch = { call = "ddddocr_pytorch" }
-paddleocr_onnxruntime = { call = "paddleocr_onnxruntime" }
+ddddocr = { call = "ddddocr" }
+paddleocr = { call = "paddleocr" }

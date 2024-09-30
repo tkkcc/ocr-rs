@@ -19,8 +19,8 @@ fn main() {
         env!("CARGO_MANIFEST_DIR"),
         "..",
         "python",
-        "ddddocr_pytorch",
-        "common.onnx",
+        "ddddocr",
+        "ddddocr.onnx",
     ]);
 
     let model = Session::builder()

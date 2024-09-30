@@ -10,3 +10,14 @@ wheels/
 .venv
 
 tmp*
+
+*.bin
+*.param
+*.pth
+*.onnx
+*\.ncnn\.*
+*\.pnnx\.*
+*\.pnnxsim\.*
+*_ncnn\.*
+*_pnnx\.*
+*_pnnxsim\.*
