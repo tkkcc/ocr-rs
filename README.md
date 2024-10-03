@@ -63,6 +63,7 @@ longsingleline: 1222ms
 tract in rust
 79: 170ms
 longsingleline: 3007ms
+
 ```
 
 
@@ -95,9 +96,18 @@ longsingleline: 34ms
 
 benchmark on genymotion android 7.0 x86
 ```txt
-onnxruntime in kotlin
+onnxruntime(intra_thread=1) in kotlin
 79: 15ms
 longsingleline: 199ms
+
+onnxruntime(intra_thread=2) in rust
+79: 12ms
+longsingleline: 135ms
+
+ncnn(thread=2) in rust
+79: 8ms
+longsingleline: 93ms
+
 ```
 benchmark on genymotion android 11.0 x86_64
 ```txt
@@ -117,7 +127,7 @@ longsingleline: 104ms
 
 ## mlkit
 
-```txt
 benchmark on android studio emulator 12.0 x86_64
+```txt
 longsingleline(height=48): 264ms
 ```
